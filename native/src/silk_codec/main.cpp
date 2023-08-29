@@ -11,7 +11,8 @@ int pts(int argc, const char **args) {
     cxxopts::Options options("pts", "");
     options.add_options()
             ("i,input", "PCM file", cxxopts::value<std::string>())//
-            ("s,simple-rate", "simple rate of PCM", cxxopts::value<int>())//
+            ("s,sample-rate", "sample rate of PCM", cxxopts::value<int>())//
+            ("r,rate", "bitrate", cxxopts::value<int>())//
             ("o,output", "output", cxxopts::value<std::string>())//
             ;
 
@@ -23,15 +24,16 @@ int pts(int argc, const char **args) {
     }
 
     auto inp = opts["input"].as<std::string>();
-    auto rat = opts["simple-rate"].as<int>();
+    auto rat = opts["sample-rate"].as<int>();
+    auto rate = opts["rate"].as<int>();
     auto output = opts["output"].as<std::string>();
 
-    auto simpleRate = rat;
+    auto sampleRate = rat;
     auto src = fopen(inp.c_str(), "rb");
     auto dst = fopen(output.c_str(), "wb");
 
     std::cerr << "Processing..." << std::endl;
-    std::cerr << "Silk simple rate: 24000" << std::endl;
+    std::cerr << "Silk bitrate: " << rate << std::endl;
 
     SilkerCoder_encode(
             NATIVE_FILE_SYSTEM(),
@@ -39,11 +41,11 @@ int pts(int argc, const char **args) {
             (void **) src,
             (void **) dst,
             true, true, false,
-            simpleRate,
-            24000,
-            20 * simpleRate / 1000,
+            sampleRate,
+            0,
+            20,
             0, 0, 0, 2,
-            24000
+            rate
     );
 
     fclose(dst);
@@ -58,7 +60,7 @@ int stp(int argc, const char **args) {
     options.add_options()//
             ("i,input", "silk file", cxxopts::value<std::string>())//
             ("o,output", "output", cxxopts::value<std::string>())//
-            ("s,simple-rate", "simple rate of silk", cxxopts::value<int>()->default_value("24000"))//
+            ("s,sample-rate", "sample rate of silk", cxxopts::value<int>()->default_value("24000"))//
             ("l,loss", "loss", cxxopts::value<int>()->default_value("0"))//
             ;
 
@@ -69,11 +71,11 @@ int stp(int argc, const char **args) {
     }
 
     auto inp = opts["input"].as<std::string>();
-    auto rat = opts["simple-rate"].as<int>();
+    auto rat = opts["sample-rate"].as<int>();
     auto loss = opts["loss"].as<int>();
     auto output = opts["output"].as<std::string>();
 
-    auto simpleRate = rat;
+    auto sampleRate = rat;
     auto src = fopen(inp.c_str(), "rb");
     auto dst = fopen(output.c_str(), "wb");
 
@@ -86,7 +88,7 @@ int stp(int argc, const char **args) {
             (void **) dst,
             true,
             true,
-            simpleRate,
+            sampleRate,
             loss
     );
 
