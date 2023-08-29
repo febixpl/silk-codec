@@ -25,7 +25,7 @@ int pts(int argc, const char **args) {
 
     auto inp = opts["input"].as<std::string>();
     auto rat = opts["sample-rate"].as<int>();
-    auto rate = opts["rate"].as<int>();
+    auto bitRate = opts["rate"].as<int>();
     auto output = opts["output"].as<std::string>();
 
     auto sampleRate = rat;
@@ -42,10 +42,10 @@ int pts(int argc, const char **args) {
             (void **) dst,
             true, true, false,
             sampleRate,
-            0,
-            20,
+            bitRate,
+            20 * sampleRate / 1000,
             0, 0, 0, 2,
-            rate
+            bitRate
     );
 
     fclose(dst);
