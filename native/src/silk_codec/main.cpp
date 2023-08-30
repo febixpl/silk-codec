@@ -33,7 +33,7 @@ int pts(int argc, const char **args) {
     auto dst = fopen(output.c_str(), "wb");
 
     std::cerr << "Processing..." << std::endl;
-    std::cerr << "Silk bitrate: " << rate << std::endl;
+    std::cerr << "Silk bitrate: " << bitRate << std::endl;
 
     SilkerCoder_encode(
             NATIVE_FILE_SYSTEM(),
